@@ -7,10 +7,11 @@
 #include <string.h>
 
 
-void users_init(userInfo *users){
+usersInfo* users_init(usersInfo *users){
     users=(userInfo*)malloc(sizeof(userInfo));
     users->number=0;
     users->users=NULL;
+    return users;
 }
 
 void registers(usersInfo*users){
@@ -25,13 +26,14 @@ void registers(usersInfo*users){
     user1->authorty=GUEST;
     user_add(users,user1);
 }
-
 user *login(usersInfo *users){
     char username[10];
     char password[16];
     user *top;
-    top=users->users;
     while(1){
+        bool over_3_time=false;
+        if(users->users == NULL)break;
+        top=users->users;
         std::cout << "请输入您的账号" << std::endl;
         std::cin >> username;
         while(1){
@@ -40,12 +42,12 @@ user *login(usersInfo *users){
                 while(input_count<3){
                     std::cout << "请输入您的密码" << std::endl;
                     std::cin >> password;
-                    if(strcmp(top->password,password)==0)return users->users;
+                    if(strcmp(top->password,password)==0)return top;
                     else std::cout << "密码错误" << std::endl;
                     input_count++;
-
                 }
                 std::cout << "您已经输错三次密码，请于三小时后重新尝试" << std::endl;
+                over_3_time=true;
                 break;
             }
             else top=top->next;
@@ -54,38 +56,164 @@ user *login(usersInfo *users){
                 break;
             }
         }
+        if(over_3_time)break;
     }
-
 }
-
 user *login_menu(usersInfo *users){
     //load_user(users);
     int choice;
     user *login_user;
     while(1){
-        std::cout << "1：登录-----------2：注册" << std::endl;
+        if(load_user)users=load_user(users);
+        bool exit_if =false;
+        std::cout << "1：登录-----------2：注册\n" << std::endl;
+        std::cout << "3：退出-----------\n" << std::endl;
         if(std::cin >> choice){
             switch(choice){
-                case 1:login_user=login(users);
-                    break;
+                case 1:
+                    if(users ->users != NULL){
+                        login_user=login(users);
+                        return login_user;
+                    }
+                    else {
+                        std::cout << "后台没有任何用，户请先注册" <<std::endl;
+                        break;
+                    }
                 case 2:registers(users);
+                    break;
+                case 3:exit_if=true;
                     break;
             }
         }
+        if(exit_if)break;
+        save_user(users);
+    }
+} //用户登录，其中包含注册功能；
+
+void user_menu(usersInfo *users,user *loginUser){
+    while(1){
+        std::cout <<"1：修改登录密码-------------2：公交路线查询"<<std::endl;
+        std::cout <<"3：修改用户信息-------------4:公交站点查询"<<std::endl;
+        std::cout <<"5：站站查询-------------6:最短路径查询"<<std::endl;
+        std::cout <<"7：最少换乘查询-------------8:退出登录"<<std::endl;
+        std::cout <<"9：注销用户-------------"<<std::endl;
+        std::cout <<"10：线路管理-------------11:站点管理"<<std::endl;
+        int choice;
+        if(std::cin >> choice){
+            if(choice > 9 && loginUser->authorty==GUEST){
+                std::cout <<"您不是管理员，没有权限使用此功能"<<std::endl;
+            }
+            else {
+                switch(choice){
+                    case 1:modify_password(loginUser);
+                        break;
+                    case 2:break;
+                    case 3:modify_information(loginUser);
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        return ;
+                    case 9:user_delete(users,loginUser);
+                        return;
+                    case 10:
+                        break;
+                    case 11:
+                        break;
+                }
+            }
+        }
+    }
+}
+void modify_information(user *loginUser){
+
+}
+
+void find_road(){
+
+}
+void modify_password(user *loginUser){//修改密码
+    char phoneNumber[11];
+    int choice;
+    int i=0;
+    while(i<3){
+        bool exit_if=false;
+        std::cout << "请输入您的手机号" <<std::endl;
+        std::cin >> phoneNumber;
+        if(strcmp(loginUser->phoneNumber,phoneNumber)==0){
+            std::cout <<"请输入您的新密码" <<std::endl;
+            std::cin >>loginUser->password;
+            std::cout <<"新密码设置成功" <<std::endl;
+            break;
+        }
+        else {
+            std::cout <<"您的身份信息有误" <<std::endl;
+            i++;
+            std::cout <<"您已经输错"<<i<<"次" <<std::endl;
+        }
+        std::cout <<"1：继续------------2：退出修改"<<std::endl;
+        if(std::cin >> choice){
+            switch(choice){
+                case 1:break;
+                case 2:exit_if=true;
+            }
+        }
+        if(exit_if)break;
+    }
+}
+usersInfo* user_add(usersInfo *users,user *user1){
+    if(users->users==NULL){
+        users->users=user1;
+        users->users->next=NULL;
+        users->number++;
+    }
+    else{
+        user1->next=users->users;
+        users->users->pre=user1;
+        users->users=user1;
+        users->number++;
+    }
+    return users;
+}// 增加用户
+usersInfo* load_user(usersInfo *users){
+    FILE *user_data;
+
+
+    if(fopen("users_data.txt","r")!=NULL)
+    {
+        user_data=fopen("users_data.txt","r");
+        fread(users, sizeof(usersInfo),1,user_data);
+        fclose(user_data);
     }
 
-
-
-
-} //用户登录，其中包含注册功能；
-void user_add(usersInfo *users,user *user1){
-    user1->next=users->users;
-    users->users=user1;
-    users->number++;
-}// 增加用户
-
+    return users;
+}//从文件中读取数据
 
 void user_delete(usersInfo *users,user *user1){
-
+    if(users->number == 1)users->users = NULL;
+    else if(user1->next == NULL){
+        user1->pre->next = NULL;
+    }
+    else if(user1->pre == NULL){
+        users->users = users->users->next;
+        users->users->pre = NULL;
+    }
+    else if(users->number > 2 ){
+        user1->pre->next=user1->next;
+        user1->next->pre=user1->pre;
+    }
     users->number--;
 }//删除用户
+void save_user(userInfo *users){
+    FILE *user_data;
+    user_data=fopen("users_data.txt","w");
+    fwrite(users, sizeof(usersInfo),1,user_data);
+    fclose(user_data);
+}//保存用户信息
+
