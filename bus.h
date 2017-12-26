@@ -31,24 +31,24 @@ typedef struct userInfo{
 } usersInfo;
 
 //站点信息
-typedef struct bus_station{
-    char station_name[10];
-    int road[20];
-    struct bue_station *next;
-} station;
-typedef struct bus_stations{
-    int number;
-    station *station;
-} stations;
-typedef struct bus_road{
-    int road_name[10];
-    station *next;
-    station *pre;
-} road;
-typedef struct bus_roads{
-    int number;
-    road *road;
-} roads;
+//typedef struct bus_station{
+//    char station_name[10];
+//    int road[20];
+//    struct bue_station *next;
+//} station;
+//typedef struct bus_stations{
+//    int number;
+//    station *station;
+//} stations;
+//typedef struct bus_road{
+//    int road_name[10];
+//    station *next;
+//    station *pre;
+//} road;
+//typedef struct bus_roads{
+//    int number;
+//    road *road;
+//} roads;
 usersInfo* users_init(userInfo *users);
 
 void modify_password(user *loginUser);

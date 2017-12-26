@@ -64,7 +64,7 @@ user *login_menu(usersInfo *users){
     int choice;
     user *login_user;
     while(1){
-        if(load_user)users=load_user(users);
+       // if(load_user(users))users=load_user(users);
         bool exit_if =false;
         std::cout << "1：登录-----------2：注册\n" << std::endl;
         std::cout << "3：退出-----------\n" << std::endl;
@@ -86,7 +86,7 @@ user *login_menu(usersInfo *users){
             }
         }
         if(exit_if)break;
-        save_user(users);
+       // save_user(users);
     }
 } //用户登录，其中包含注册功能；
 
