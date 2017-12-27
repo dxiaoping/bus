@@ -44,7 +44,4 @@ usersInfo* user_add(usersInfo *users,user *user1);// 增加用户
 void user_delete(usersInfo *users,user *user1);//删除用户
 usersInfo* load_user(usersInfo *users);//从文件中读取数据
 void save_user(userInfo *users);//保存用户信息
-void user_management(user *loginUser);//用户管理
 void visit_users(userInfo *userInfo1);
-
-
