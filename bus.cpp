@@ -5,6 +5,8 @@
 #include "bus.h"
 #include <iostream>
 #include <string.h>
+#include <cstdio>
+#include <cstdlib>
 
 
 usersInfo* users_init(usersInfo *users){
@@ -14,7 +16,7 @@ usersInfo* users_init(usersInfo *users){
     return users;
 }
 
-void registers(usersInfo*users){
+void registers(usersInfo *users){
     user *user1;
     user1=(user*)malloc(sizeof(user));
     std::cout << "请输入您的账号" << std::endl;
@@ -25,7 +27,11 @@ void registers(usersInfo*users){
     std::cin >> user1->phoneNumber;
     user1->authorty=GUEST;
     user_add(users,user1);
+    visit_users(users);
+    save_user(users);
+    //load_user(users);
 }
+
 user *login(usersInfo *users){
     char username[10];
     char password[16];
@@ -59,12 +65,12 @@ user *login(usersInfo *users){
         if(over_3_time)break;
     }
 }
+
 user *login_menu(usersInfo *users){
-    //load_user(users);
     int choice;
     user *login_user;
     while(1){
-       // if(load_user(users))users=load_user(users);
+        if(load_user) users=load_user(users);
         bool exit_if =false;
         std::cout << "1：登录-----------2：注册\n" << std::endl;
         std::cout << "3：退出-----------\n" << std::endl;
@@ -86,7 +92,6 @@ user *login_menu(usersInfo *users){
             }
         }
         if(exit_if)break;
-       // save_user(users);
     }
 } //用户登录，其中包含注册功能；
 
@@ -131,13 +136,13 @@ void user_menu(usersInfo *users,user *loginUser){
         }
     }
 }
-void modify_information(user *loginUser){
 
+void modify_information(user *loginUser){
 }
 
 void find_road(){
-
 }
+
 void modify_password(user *loginUser){//修改密码
     char phoneNumber[11];
     int choice;
@@ -167,6 +172,7 @@ void modify_password(user *loginUser){//修改密码
         if(exit_if)break;
     }
 }
+
 usersInfo* user_add(usersInfo *users,user *user1){
     if(users->users==NULL){
         users->users=user1;
@@ -181,17 +187,20 @@ usersInfo* user_add(usersInfo *users,user *user1){
     }
     return users;
 }// 增加用户
+
 usersInfo* load_user(usersInfo *users){
     FILE *user_data;
-
-
     if(fopen("users_data.txt","r")!=NULL)
     {
         user_data=fopen("users_data.txt","r");
-        fread(users, sizeof(usersInfo),1,user_data);
+        while (true){
+            user *tempUser = (user*)malloc(sizeof(user));
+            fread(tempUser, sizeof(user),1,user_data);
+            if(feof(user_data)) break;
+            user_add(users,tempUser);
+        }
         fclose(user_data);
     }
-
     return users;
 }//从文件中读取数据
 
@@ -210,10 +219,24 @@ void user_delete(usersInfo *users,user *user1){
     }
     users->number--;
 }//删除用户
+
 void save_user(userInfo *users){
-    FILE *user_data;
-    user_data=fopen("users_data.txt","w");
-    fwrite(users, sizeof(usersInfo),1,user_data);
+    FILE *user_data=NULL;
+    user_data=fopen("users_data.txt","w+");
+    user *tempUser = users->users;
+    while (tempUser){
+        fwrite(tempUser, sizeof(user),1,user_data);
+        tempUser = tempUser->next;
+    }
     fclose(user_data);
 }//保存用户信息
+
+void visit_users(userInfo *userInfo1){
+    user *tempUser;
+    tempUser = userInfo1->users;
+    while (tempUser){
+        printf("username:%s\n",tempUser->username);
+        tempUser = tempUser->next;
+    }
+}
 
