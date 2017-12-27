@@ -3,4 +3,4 @@ project(bus)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(bus main.cpp bus.h bus.cpp bus_station.h)
+add_executable(bus main.cpp bus.h bus.cpp bus_station.h bus_road.cpp)

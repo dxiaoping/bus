@@ -33,8 +33,8 @@ typedef struct {
 }bus_management;
 
 
-void CreateBusGraph(bus_management *bus_management1);
+bus_management* CreateBusGraph(bus_management *bus_management1);
 void AddLine(bus_management *bus_management1);
-void AddStation(bus_management *bus_management1,busLine lineName);
+void AddStation(bus_management *bus_management1);
 void DeleteStation(busLine lineName,stationInfo station);
 void modifyStation(bus_management *bus_management1);
