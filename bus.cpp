@@ -5,6 +5,8 @@
 #include "bus.h"
 #include <iostream>
 #include <string.h>
+#include <cstdio>
+#include <cstdlib>
 
 
 usersInfo* users_init(usersInfo *users){
@@ -14,18 +16,22 @@ usersInfo* users_init(usersInfo *users){
     return users;
 }
 
-void registers(usersInfo*users){
+void registers(usersInfo *users){
     user *user1;
     user1=(user*)malloc(sizeof(user));
-    std::cout << "è¯·è¾“å…¥æ‚¨çš„è´¦å·" << std::endl;
+    std::cout << "ÇëÊäÈëÄúµÄÕËºÅ" << std::endl;
     std::cin >> user1->username;
-    std::cout << "è¯·è¾“å…¥æ‚¨çš„å¯†ç " << std::endl;
+    std::cout << "ÇëÊäÈëÄúµÄÃÜÂë" << std::endl;
     std::cin >> user1->password;
-    std::cout << "è¯·è¾“å…¥æ‚¨çš„æ‰‹æœºå·" << std::endl;
+    std::cout << "ÇëÊäÈëÄúµÄÊÖ»úºÅ" << std::endl;
     std::cin >> user1->phoneNumber;
     user1->authorty=GUEST;
     user_add(users,user1);
+    visit_users(users);
+    save_user(users);
+    //load_user(users);
 }
+
 user *login(usersInfo *users){
     char username[10];
     char password[16];
@@ -34,40 +40,42 @@ user *login(usersInfo *users){
         bool over_3_time=false;
         if(users->users == NULL)break;
         top=users->users;
-        std::cout << "è¯·è¾“å…¥æ‚¨çš„è´¦å·" << std::endl;
+        std::cout << "ÇëÊäÈëÄúµÄÕËºÅ" << std::endl;
         std::cin >> username;
         while(1){
             if(strcmp(top->username,username)==0){
                 int input_count=0;
                 while(input_count<3){
-                    std::cout << "è¯·è¾“å…¥æ‚¨çš„å¯†ç " << std::endl;
+                    std::cout << "ÇëÊäÈëÄúµÄÃÜÂë" << std::endl;
                     std::cin >> password;
                     if(strcmp(top->password,password)==0)return top;
-                    else std::cout << "å¯†ç é”™è¯¯" << std::endl;
+                    else std::cout << "ÃÜÂë´íÎó" << std::endl;
                     input_count++;
                 }
-                std::cout << "æ‚¨å·²ç»è¾“é”™ä¸‰æ¬¡å¯†ç ï¼Œè¯·äºŽä¸‰å°æ—¶åŽé‡æ–°å°è¯•" << std::endl;
+                std::cout << "ÄúÒÑ¾­Êä´íÈý´ÎÃÜÂë£¬ÇëÓÚÈýÐ¡Ê±ºóÖØÐÂ³¢ÊÔ" << std::endl;
                 over_3_time=true;
                 break;
             }
             else top=top->next;
             if(top==NULL){
-                std::cout << "æ‚¨è¾“å…¥çš„è´¦å·ä¸å­˜åœ¨ï¼Œè¯·é‡æ–°è¾“å…¥" << std::endl;
+                std::cout << "ÄúÊäÈëµÄÕËºÅ²»´æÔÚ£¬ÇëÖØÐÂÊäÈë" << std::endl;
                 break;
             }
         }
         if(over_3_time)break;
     }
 }
+
 user *login_menu(usersInfo *users){
-    //load_user(users);
+    load_user(users);
+    visit_users(users);
     int choice;
     user *login_user;
     while(1){
-        if(load_user)users=load_user(users);
+        //if(load_user) users=load_user(users);
         bool exit_if =false;
-        std::cout << "1ï¼šç™»å½•-----------2ï¼šæ³¨å†Œ\n" << std::endl;
-        std::cout << "3ï¼šé€€å‡º-----------\n" << std::endl;
+        std::cout << "1£ºµÇÂ¼-----------2£º×¢²á\n" << std::endl;
+        std::cout << "3£ºÍË³ö-----------\n" << std::endl;
         if(std::cin >> choice){
             switch(choice){
                 case 1:
@@ -76,7 +84,7 @@ user *login_menu(usersInfo *users){
                         return login_user;
                     }
                     else {
-                        std::cout << "åŽå°æ²¡æœ‰ä»»ä½•ç”¨ï¼Œæˆ·è¯·å…ˆæ³¨å†Œ" <<std::endl;
+                        std::cout << "ºóÌ¨Ã»ÓÐÈÎºÎÓÃ£¬»§ÇëÏÈ×¢²á" <<std::endl;
                         break;
                     }
                 case 2:registers(users);
@@ -86,22 +94,21 @@ user *login_menu(usersInfo *users){
             }
         }
         if(exit_if)break;
-        save_user(users);
     }
-} //ç”¨æˆ·ç™»å½•ï¼Œå…¶ä¸­åŒ…å«æ³¨å†ŒåŠŸèƒ½ï¼›
+} //ÓÃ»§µÇÂ¼£¬ÆäÖÐ°üº¬×¢²á¹¦ÄÜ£»
 
 void user_menu(usersInfo *users,user *loginUser){
     while(1){
-        std::cout <<"1ï¼šä¿®æ”¹ç™»å½•å¯†ç -------------2ï¼šå…¬äº¤è·¯çº¿æŸ¥è¯¢"<<std::endl;
-        std::cout <<"3ï¼šä¿®æ”¹ç”¨æˆ·ä¿¡æ¯-------------4:å…¬äº¤ç«™ç‚¹æŸ¥è¯¢"<<std::endl;
-        std::cout <<"5ï¼šç«™ç«™æŸ¥è¯¢-------------6:æœ€çŸ­è·¯å¾„æŸ¥è¯¢"<<std::endl;
-        std::cout <<"7ï¼šæœ€å°‘æ¢ä¹˜æŸ¥è¯¢-------------8:é€€å‡ºç™»å½•"<<std::endl;
-        std::cout <<"9ï¼šæ³¨é”€ç”¨æˆ·-------------"<<std::endl;
-        std::cout <<"10ï¼šçº¿è·¯ç®¡ç†-------------11:ç«™ç‚¹ç®¡ç†"<<std::endl;
+        std::cout <<"1£ºÐÞ¸ÄµÇÂ¼ÃÜÂë-------------2£º¹«½»Â·Ïß²éÑ¯"<<std::endl;
+        std::cout <<"3£ºÐÞ¸ÄÓÃ»§ÐÅÏ¢-------------4:¹«½»Õ¾µã²éÑ¯"<<std::endl;
+        std::cout <<"5£ºÕ¾Õ¾²éÑ¯-------------6:×î¶ÌÂ·¾¶²éÑ¯"<<std::endl;
+        std::cout <<"7£º×îÉÙ»»³Ë²éÑ¯-------------8:ÍË³öµÇÂ¼"<<std::endl;
+        std::cout <<"9£º×¢ÏúÓÃ»§-------------"<<std::endl;
+        std::cout <<"10£ºÏßÂ·¹ÜÀí-------------11:Õ¾µã¹ÜÀí"<<std::endl;
         int choice;
         if(std::cin >> choice){
             if(choice > 9 && loginUser->authorty==GUEST){
-                std::cout <<"æ‚¨ä¸æ˜¯ç®¡ç†å‘˜ï¼Œæ²¡æœ‰æƒé™ä½¿ç”¨æ­¤åŠŸèƒ½"<<std::endl;
+                std::cout <<"Äú²»ÊÇ¹ÜÀíÔ±£¬Ã»ÓÐÈ¨ÏÞÊ¹ÓÃ´Ë¹¦ÄÜ"<<std::endl;
             }
             else {
                 switch(choice){
@@ -131,33 +138,33 @@ void user_menu(usersInfo *users,user *loginUser){
         }
     }
 }
-void modify_information(user *loginUser){
 
+void modify_information(user *loginUser){
 }
 
 void find_road(){
-
 }
-void modify_password(user *loginUser){//ä¿®æ”¹å¯†ç 
+
+void modify_password(user *loginUser){//ÐÞ¸ÄÃÜÂë
     char phoneNumber[11];
     int choice;
     int i=0;
     while(i<3){
         bool exit_if=false;
-        std::cout << "è¯·è¾“å…¥æ‚¨çš„æ‰‹æœºå·" <<std::endl;
+        std::cout << "ÇëÊäÈëÄúµÄÊÖ»úºÅ" <<std::endl;
         std::cin >> phoneNumber;
         if(strcmp(loginUser->phoneNumber,phoneNumber)==0){
-            std::cout <<"è¯·è¾“å…¥æ‚¨çš„æ–°å¯†ç " <<std::endl;
+            std::cout <<"ÇëÊäÈëÄúµÄÐÂÃÜÂë" <<std::endl;
             std::cin >>loginUser->password;
-            std::cout <<"æ–°å¯†ç è®¾ç½®æˆåŠŸ" <<std::endl;
+            std::cout <<"ÐÂÃÜÂëÉèÖÃ³É¹¦" <<std::endl;
             break;
         }
         else {
-            std::cout <<"æ‚¨çš„èº«ä»½ä¿¡æ¯æœ‰è¯¯" <<std::endl;
+            std::cout <<"ÄúµÄÉí·ÝÐÅÏ¢ÓÐÎó" <<std::endl;
             i++;
-            std::cout <<"æ‚¨å·²ç»è¾“é”™"<<i<<"æ¬¡" <<std::endl;
+            std::cout <<"ÄúÒÑ¾­Êä´í"<<i<<"´Î" <<std::endl;
         }
-        std::cout <<"1ï¼šç»§ç»­------------2ï¼šé€€å‡ºä¿®æ”¹"<<std::endl;
+        std::cout <<"1£º¼ÌÐø------------2£ºÍË³öÐÞ¸Ä"<<std::endl;
         if(std::cin >> choice){
             switch(choice){
                 case 1:break;
@@ -167,6 +174,7 @@ void modify_password(user *loginUser){//ä¿®æ”¹å¯†ç 
         if(exit_if)break;
     }
 }
+
 usersInfo* user_add(usersInfo *users,user *user1){
     if(users->users==NULL){
         users->users=user1;
@@ -180,20 +188,23 @@ usersInfo* user_add(usersInfo *users,user *user1){
         users->number++;
     }
     return users;
-}// å¢žåŠ ç”¨æˆ·
+}// Ôö¼ÓÓÃ»§
+
 usersInfo* load_user(usersInfo *users){
     FILE *user_data;
-
-
     if(fopen("users_data.txt","r")!=NULL)
     {
         user_data=fopen("users_data.txt","r");
-        fread(users, sizeof(usersInfo),1,user_data);
+        while (true){
+            user *tempUser = (user*)malloc(sizeof(user));
+            fread(tempUser, sizeof(user),1,user_data);
+            if(feof(user_data)) break;
+            user_add(users,tempUser);
+        }
         fclose(user_data);
     }
-
     return users;
-}//ä»Žæ–‡ä»¶ä¸­è¯»å–æ•°æ®
+}//´ÓÎÄ¼þÖÐ¶ÁÈ¡Êý¾Ý
 
 void user_delete(usersInfo *users,user *user1){
     if(users->number == 1)users->users = NULL;
@@ -209,11 +220,25 @@ void user_delete(usersInfo *users,user *user1){
         user1->next->pre=user1->pre;
     }
     users->number--;
-}//åˆ é™¤ç”¨æˆ·
+}//É¾³ýÓÃ»§
+
 void save_user(userInfo *users){
-    FILE *user_data;
-    user_data=fopen("users_data.txt","w");
-    fwrite(users, sizeof(usersInfo),1,user_data);
+    FILE *user_data=NULL;
+    user_data=fopen("users_data.txt","w+");
+    user *tempUser = users->users;
+    while (tempUser){
+        fwrite(tempUser, sizeof(user),1,user_data);
+        tempUser = tempUser->next;
+    }
     fclose(user_data);
-}//ä¿å­˜ç”¨æˆ·ä¿¡æ¯
+}//±£´æÓÃ»§ÐÅÏ¢
+
+void visit_users(userInfo *userInfo1){
+    user *tempUser;
+    tempUser = userInfo1->users;
+    while (tempUser){
+        printf("username:%s\n",tempUser->username);
+        tempUser = tempUser->next;
+    }
+}
 
