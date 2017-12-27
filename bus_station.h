@@ -13,7 +13,8 @@
 
 //站点信息
 typedef struct info{
-    char name[10];
+    char name[10]; //站点名称
+    int number; //站点号码
     struct info *next;
 }stationInfo;
 
@@ -22,7 +23,7 @@ typedef struct info{
 typedef struct bus{
     int bus_name;
     stationInfo *stationInfoName;
-} busLine;
+}busLine;
 
 
 //城市图
@@ -33,10 +34,7 @@ typedef struct {
 
 
 void CreateBusGraph(bus_management *bus_management1);
-void AddStation(bus_management *bus_management1);
-void DeleteStation(bus_management *bus_management1);
+void AddLine(bus_management *bus_management1);
+void AddStation(bus_management *bus_management1,busLine lineName);
+void DeleteStation(busLine lineName,stationInfo station);
 void modifyStation(bus_management *bus_management1);
-
-
-
-
