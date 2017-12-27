@@ -30,7 +30,7 @@ typedef struct userInfo{
     struct users *users;
 } usersInfo;
 
-//站点信息
+
 
 
 usersInfo* users_init(userInfo *users);
