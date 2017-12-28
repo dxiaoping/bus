@@ -22,6 +22,7 @@ typedef struct info{
 //公交信息
 typedef struct bus{
     int bus_name;
+    int station_number;
     stationInfo *stationInfoName;
 }busLine;
 
@@ -29,12 +30,16 @@ typedef struct bus{
 //城市图
 typedef struct {
     busLine AllBusLine[MAX];
-    int station_number;
+    int line_number;
 }bus_management;
 
 
 bus_management* CreateBusGraph(bus_management *bus_management1);
 void AddLine(bus_management *bus_management1);
 void AddStation(bus_management *bus_management1);
-void DeleteStation(busLine lineName,stationInfo station);
+void DeleteStation(bus_management *bus_management1);
 void modifyStation(bus_management *bus_management1);
+bus_management* load_bus_File();
+void road_management(bus_management *bus_management1);
+void visit_line(bus_management *bus_management1);
+void save_bus_managment(bus_management *bus_management1);

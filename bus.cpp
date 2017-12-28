@@ -7,6 +7,7 @@
 #include <string.h>
 #include <cstdio>
 #include <cstdlib>
+#include "bus_station.h"
 
 
 usersInfo* users_init(usersInfo *users){
@@ -33,7 +34,7 @@ void registers(usersInfo *users){
     std::cin >> user1->password;
     std::cout << "请输入您的手机号" << std::endl;
     std::cin >> user1->phoneNumber;
-    user1->authorty=GUEST;
+    user1->authorty=ROOT;
     user_add(users,user1);
     visit_users(users);
     save_user(users);
@@ -102,13 +103,16 @@ user *login_menu(usersInfo *users){
 } //用户登录，其中包含注册功能；
 
 void user_menu(usersInfo *users,user *loginUser){
+    bus_management *bus_management1;
+    bus_management1 = CreateBusGraph(bus_management1);
+    //load_bus_File(bus_management1);
     while(1){
         std::cout <<"1：修改登录密码-------------2：公交路线查询"<<std::endl;
         std::cout <<"3：修改用户信息-------------4:公交站点查询"<<std::endl;
         std::cout <<"5：站站查询-------------6:最短路径查询"<<std::endl;
         std::cout <<"7：最少换乘查询-------------8:退出登录"<<std::endl;
         std::cout <<"9：注销用户-------------"<<std::endl;
-        std::cout <<"10：线路管理-------------11:站点管理"<<std::endl;
+        std::cout <<"10：线路管理"<<std::endl;
         int choice;
         if(std::cin >> choice){
             if(choice > 9 && loginUser->authorty==GUEST){
@@ -134,6 +138,7 @@ void user_menu(usersInfo *users,user *loginUser){
                     case 9:user_delete(users,loginUser);
                         return;
                     case 10:
+                        road_management(bus_management1);
                         break;
                     case 11:
                         break;
