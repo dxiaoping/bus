@@ -10,6 +10,7 @@
 #include "bus_station.h"
 
 
+
 usersInfo* users_init(usersInfo *users){
     users=(userInfo*)malloc(sizeof(userInfo));
     users->number=0;
@@ -104,8 +105,7 @@ user *login_menu(usersInfo *users){
 
 void user_menu(usersInfo *users,user *loginUser){
     bus_management *bus_management1;
-    bus_management1 = CreateBusGraph(bus_management1);
-    //load_bus_File(bus_management1);
+    bus_management1 = load_bus_File();
     while(1){
         std::cout <<"1：修改登录密码-------------2：公交路线查询"<<std::endl;
         std::cout <<"3：修改用户信息-------------4:公交站点查询"<<std::endl;
@@ -122,12 +122,13 @@ void user_menu(usersInfo *users,user *loginUser){
                 switch(choice){
                     case 1:modify_password(loginUser);
                         break;
-                    case 2:break;
+                    case 2:search_line(bus_management1);
+                        break;
                     case 3:modify_information(loginUser);
                         break;
-                    case 4:
+                    case 4:search_station(bus_management1);
                         break;
-                    case 5:
+                    case 5:search_load(bus_management1);
                         break;
                     case 6:
                         break;

@@ -42,4 +42,7 @@ void modifyStation(bus_management *bus_management1);
 bus_management* load_bus_File();
 void road_management(bus_management *bus_management1);
 void visit_line(bus_management *bus_management1);
-void save_bus_managment(bus_management *bus_management1);
+void save_bus_management(bus_management *bus_management1);
+void search_line(bus_management *management1);
+void search_station(bus_management *management1);
+void search_load(bus_management *management1);
