@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string.h>
 
-void DFS(bus_management *management1, char station1[10], char station2[10]);
 
 bus_management* CreateBusGraph(bus_management *bus_management1){
     bus_management1 = (bus_management*)malloc(sizeof(bus_management));
@@ -33,15 +32,17 @@ void AddStation(bus_management *bus_management1){
     for (int j = 0; j < bus_management1->line_number; j++) {
         if (bus_management1->AllBusLine[j].bus_name ==i){
             stationInfo *station = (stationInfo*)malloc(sizeof(stationInfo));
-            std::cout << "请输入站点名称" <<std::endl;
+            std::cout << "请输入站点名称" << std::endl;
             std::cin >> station->name;
-            station->number = bus_management1->AllBusLine[j].bus_name*10 + j;
+            station->number = bus_management1->AllBusLine[j].bus_name*10
+                              + bus_management1->AllBusLine[j].station_number;
             station->next = bus_management1->AllBusLine[j].stationInfoName;
             bus_management1->AllBusLine[j].stationInfoName = station;
             bus_management1->AllBusLine[j].station_number++;
         }
         else if(j==bus_management1->line_number)
             std::cout<< "该路线不存在" <<std::endl;
+
     }
     save_bus_management(bus_management1);
 }

@@ -46,3 +46,4 @@ void save_bus_management(bus_management *bus_management1);
 void search_line(bus_management *management1);
 void search_station(bus_management *management1);
 void search_load(bus_management *management1);
+void DFS(bus_management *management1, char station1[10], char station2[10]);
