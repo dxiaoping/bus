@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string.h>
 
-
 bus_management* CreateBusGraph(bus_management *bus_management1){
     bus_management1 = (bus_management*)malloc(sizeof(bus_management));
     bus_management1->line_number = 0;
@@ -18,6 +17,12 @@ void AddLine(bus_management *bus_management1){
     int road;
     std::cout << "请输入线路的名称" << std::endl;
     std::cin >> road;
+    for(int i=0; i < bus_management1->line_number; i++){
+        if(bus_management1->AllBusLine[i].bus_name == road){
+            std::cout << "该路线已经存在" <<std::endl;
+            return;
+        }
+    }
     bus_management1->AllBusLine[bus_management1->line_number].bus_name = road;
     bus_management1->AllBusLine[bus_management1->line_number].station_number = 0;
     bus_management1->AllBusLine[bus_management1->line_number].stationInfoName = NULL;
@@ -31,18 +36,31 @@ void AddStation(bus_management *bus_management1){
     std::cin >> i;
     for (int j = 0; j < bus_management1->line_number; j++) {
         if (bus_management1->AllBusLine[j].bus_name ==i){
+            stationInfo *stationInfo1 = bus_management1->AllBusLine[j].stationInfoName;
+            while (stationInfo1){
+                stationInfo1 = stationInfo1->next;
+            }
             stationInfo *station = (stationInfo*)malloc(sizeof(stationInfo));
             std::cout << "请输入站点名称" << std::endl;
             std::cin >> station->name;
-            station->number = bus_management1->AllBusLine[j].bus_name*10
-                              + bus_management1->AllBusLine[j].station_number;
-            station->next = bus_management1->AllBusLine[j].stationInfoName;
-            bus_management1->AllBusLine[j].stationInfoName = station;
-            bus_management1->AllBusLine[j].station_number++;
+            stationInfo *top;
+            top = bus_management1->AllBusLine[j].stationInfoName;
+            while(top){
+                if(strcmp(bus_management1->AllBusLine[j].stationInfoName->name,station->name) ==0){
+                    std::cout << "该站点已经存在" <<std::endl;
+                    return;
+                }
+                top =top->next;
+            }
+                if(bus_management1->AllBusLine[j].station_number==0)station->number = bus_management1->AllBusLine[j].bus_name*10
+                                  +bus_management1->AllBusLine[j].station_number;
+                else station->number = bus_management1->AllBusLine[j].stationInfoName->number+1;
+                station->next = bus_management1->AllBusLine[j].stationInfoName;
+                bus_management1->AllBusLine[j].stationInfoName = station;
+                bus_management1->AllBusLine[j].station_number++;
         }
         else if(j==bus_management1->line_number)
             std::cout<< "该路线不存在" <<std::endl;
-
     }
     save_bus_management(bus_management1);
 }
@@ -54,7 +72,7 @@ void DeleteStation(bus_management *bus_management1){
     std::cout << "请输入线路的名称" << std::endl;
     std::cin >> line_name;
     for(int i=0; i<bus_management1->line_number;i++){
-        if (bus_management1->AllBusLine[i].bus_name = line_name){
+        if (bus_management1->AllBusLine[i].bus_name == line_name){
             std::cout << "请输入站点的序号" << std::endl;
             std::cin >> stationNumber;
             PreStationInfo = stationInfo1 = bus_management1->AllBusLine[i].stationInfoName;
@@ -62,10 +80,12 @@ void DeleteStation(bus_management *bus_management1){
                 if (bus_management1->AllBusLine[i].stationInfoName->number == stationNumber){
                     bus_management1->AllBusLine[i].stationInfoName = stationInfo1->next;
                     bus_management1->AllBusLine[i].station_number--;
+                    save_bus_management(bus_management1);
                     return;
                 } else if (stationInfo1->number == stationNumber){
                     PreStationInfo->next = stationInfo1->next;
                     bus_management1->AllBusLine[i].station_number--;
+                    save_bus_management(bus_management1);
                     return;
                 }
                 PreStationInfo = stationInfo1;
@@ -73,7 +93,6 @@ void DeleteStation(bus_management *bus_management1){
             }
         }
     }
-
 }
 
 void modifyStation(bus_management *bus_management1){
@@ -81,25 +100,31 @@ void modifyStation(bus_management *bus_management1){
 }
 
 void road_management(bus_management *bus_management1){
-    printf("1.增加线路\n");
-    printf("2.增加站点\n");
-    printf("3.删除站点\n");
-    int choice;
-    std::cin >> choice;
-    //bus_management1 = load_bus_File();
-    switch (choice){
-        case 1:AddLine(bus_management1);
-            visit_line(bus_management1);
-            break;
-        case 2:visit_line(bus_management1);
-            AddStation(bus_management1);
-            break;
-        case 3:visit_line(bus_management1);
-            DeleteStation(bus_management1);
-            break;
-        default:printf("输入有误");
-            break;
+    while(1){
+        printf("1.增加线路\n");
+        printf("2.增加站点\n");
+        printf("3.删除站点\n");
+        printf("4.退出\n");
+        int choice;
+        std::cin >> choice;
+        //bus_management1 = load_bus_File();
+        switch (choice){
+            case 1:AddLine(bus_management1);
+                visit_line(bus_management1);
+                break;
+            case 2:visit_line(bus_management1);
+                AddStation(bus_management1);
+                break;
+            case 3:visit_line(bus_management1);
+                DeleteStation(bus_management1);
+                break;
+            case 4:
+                return;
+            default:printf("输入有误");
+                break;
+        }
     }
+
 }
 
 void visit_line(bus_management *bus_management1){
@@ -163,7 +188,6 @@ void search_station(bus_management *management1) {
             stationInfo1 = stationInfo1->next;
         }
     }
-
 }
 
 void search_line(bus_management *management1) {
@@ -174,12 +198,11 @@ void search_line(bus_management *management1) {
         if (management1->AllBusLine[i].bus_name == line){
             stationInfo *stationInfo1 = management1->AllBusLine[i].stationInfoName;
             while (stationInfo1){
-                printf("%d,%s",stationInfo1->number,stationInfo1->name);
+                printf("%d,%s\n",stationInfo1->number,stationInfo1->name);
                 stationInfo1=stationInfo1->next;
             }
         }
     }
-
 }
 
 void search_load(bus_management *management1) {
@@ -190,6 +213,146 @@ void search_load(bus_management *management1) {
     std::cin >> station2;
     DFS(management1,station1,station2);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void DFS(bus_management *management1, char station1[10], char station2[10]) {
 

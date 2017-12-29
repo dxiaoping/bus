@@ -28,6 +28,7 @@ void registers(usersInfo *users){
         if(strcmp(top->username,user1->username)==0){
             std::cout << "该用户已经注册，请更换用户名称" <<std::endl;
             return;
+
         }
         top = top->next;
     }
@@ -35,7 +36,7 @@ void registers(usersInfo *users){
     std::cin >> user1->password;
     std::cout << "请输入您的手机号" << std::endl;
     std::cin >> user1->phoneNumber;
-    user1->authorty=ROOT;
+    user1->authorty=GUEST;
     user_add(users,user1);
     visit_users(users);
     save_user(users);
